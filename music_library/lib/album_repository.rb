@@ -16,15 +16,16 @@ class AlbumRepository
 
     result_set.each do |record|
       album = Album.new
-      album.id = record['id']
+      album.id = record['id'].to_i
       album.title = record['title']
-      album.release_year = record['release_year']
-      album.artist_id = record['artist_id']
+      album.release_year = record['release_year'].to_i
+      album.artist_id = record['artist_id'].to_i
       
       albums << album
     end
 
-    return albums
+    return albums.sort_by! {|album| album.id}
+    
   end
  
   def find(id)
@@ -32,14 +33,16 @@ class AlbumRepository
     # One argument: the id (number)
     # Executes the SQL query:
     # Returns a single Album object.
-    sql = 'SELECT id, title, release_year,artist_id FROM albums WHERE id = ' + id.to_s
-    result = DatabaseConnection.exec_params(sql, []).to_a[0]
+    sql = 'SELECT id, title, release_year,artist_id FROM albums WHERE id = $1;'
+    sql_params = [id]
+    result = DatabaseConnection.exec_params(sql, sql_params)
+    record = result[0]
 
     album = Album.new
-    album.id = result['id']
-    album.title = result['title']
-    album.release_year = result['release_year']
-    album.artist_id = result['artist_id']
+    album.id = record['id'].to_i
+    album.title = record['title']
+    album.release_year = record['release_year'].to_i
+    album.artist_id = record['artist_id'].to_i
 
     return album
   
@@ -47,12 +50,32 @@ class AlbumRepository
 
   # Add more methods below for each operation you'd like to implement.
 
-  # def create(album)
-  # end
+  def create(album)
+    sql = 'INSERT INTO albums (title, release_year, artist_id) VALUES ($1, $2, $3);'
+    sql_params = [album.title, album.release_year, album.artist_id]
 
-  # def update(album)
-  # end
+    DatabaseConnection.exec_params(sql, sql_params)
 
-  # def delete(album)
-  # end
+    return nil
+
+  end
+
+  def update(album)
+    sql = 'UPDATE albums SET title = $1, release_year = $2, artist_id = $3 WHERE id = $4;'
+    sql_params = [album.title, album.release_year, album.artist_id, album.id]
+
+    DatabaseConnection.exec_params(sql, sql_params)
+
+    return nil
+
+  end
+
+  def delete(id)
+    sql = 'DELETE FROM albums WHERE id = $1;'
+    sql_params = [id]
+
+    DatabaseConnection.exec_params(sql,sql_params)
+
+    return nil
+  end
 end
