@@ -61,3 +61,40 @@ if __FILE__ == $0
   )
   app.run
 end
+
+
+
+
+# Phase 3 notes
+# Exercise One query
+
+# SELECT albums.id,
+# 	albums.title
+# FROM albums
+# JOIN artists
+# ON albums.artist_id = artists.id
+# WHERE artists.name = 'Taylor Swift'
+# ;
+
+# Exercise Two 
+
+# SELECT albums.id,
+# 	albums.title
+# FROM albums
+# JOIN artists
+# ON albums.artist_id = artists.id
+# WHERE artists.name = 'Pixies' AND
+# 	albums.release_year = 1988
+# ;
+
+# Challenge:
+
+# SELECT albums.id AS album_id,
+# 	albums.title
+# FROM albums
+# JOIN artists
+# ON albums.artist_id = artists.id
+# WHERE artists.name = 'Nina Simone' AND
+# 	albums.release_year > 1975
+# ;
+
